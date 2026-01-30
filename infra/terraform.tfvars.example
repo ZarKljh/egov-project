@@ -1,0 +1,40 @@
+# ============================================
+# Terraform 변수 예시 (NCP)
+# ============================================
+# 1. 이 파일을 terraform.tfvars 로 복사하세요.
+# 2. NCP 콘솔에서 발급받은 Access Key, Secret Key, 제품 코드 등 실제 값으로 수정하세요.
+# 3. terraform.tfvars 는 .gitignore 에 포함되어 커밋하지 마세요.
+
+# NCP 인증 정보 (NCP 콘솔 > 마이페이지 > 계정관리 > 인증키관리)
+ncloud_access_key = "your-ncp-access-key"
+ncloud_secret_key = "your-ncp-secret-key"
+ncloud_region     = "KR"
+ncloud_site       = "public"  # public(민간) | gov(공공) | fin(금융)
+
+project_name = "workspace-egov"
+
+# 서버 이미지 제품 코드 (OS)
+# NCP 콘솔 > 서버 > 서버 생성 > 이미지 선택 후 제품 코드 확인
+# 예시: Ubuntu 22.04 = "SW.VSVR.OS.LNX64.Ubuntu.Ubuntu.22.04.B050"
+server_image_product_code = "SW.VSVR.OS.LNX64.Ubuntu.Ubuntu.22.04.B050"
+
+# 서버 제품 코드 (스펙)
+# NCP 콘솔 > 서버 > 서버 생성 > 스펙 선택 후 제품 코드 확인
+# 예시: 2vCPU 4GB = "SVR.VSVR.HICPU.C002.M004.NET.SSD.B050.G002"
+server_product_code = "SVR.VSVR.HICPU.C002.M004.NET.SSD.B050.G002"
+
+# 로그인 키 이름 (NCP 콘솔 > 서버 > 로그인 키 관리에서 생성)
+login_key_name = "your-login-key-name"
+
+# 기본 VPC 사용 시 비워두면 자동으로 기본 VPC/서브넷 사용
+vpc_no    = ""
+subnet_no = ""
+
+# SSH 허용 IP (보안 권장: 본인 IP만)
+# 예: ["123.456.789.0/32"]
+ssh_allowed_cidrs = ["0.0.0.0/0"]
+
+assign_public_ip = true
+
+# 초기화 스크립트 번호 (선택사항, NCP 콘솔에서 생성 후 번호 입력)
+init_script_no = ""

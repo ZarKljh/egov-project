@@ -1,0 +1,13 @@
+# globals.properties 예시. 복사 후 globals.properties 로 저장하고 값 설정.
+# jwt.secret 은 반드시 별도 생성해 사용하세요.
+
+jwt.secret=YOUR_JWT_SECRET_KEY_HERE
+# Next.js 로그인 페이지 URL
+next.login.url=http://localhost:3000/login
+# Next.js 프론트엔드 주소
+next.frontend.url=http://localhost:3000
+# CORS 허용 Origin (쉼표 구분). 배포 시 도메인 추가
+# 예: cors.allowed.origins=https://yourdomain.com,https://www.yourdomain.com
+cors.allowed.origins=http://localhost:3000,http://127.0.0.1:3000
+# JSP 게시판 컨텍스트 경로
+jsp.board.url=/
