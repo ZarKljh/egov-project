@@ -20,7 +20,6 @@ RUN apk add --no-cache \
     libpq-dev \
     icu-dev \
     libxml2-dev \
-    && docker-php-ext-configure pdo_pgsql \
     && docker-php-ext-install -j$(nproc) \
     pdo_pgsql \
     mbstring \
