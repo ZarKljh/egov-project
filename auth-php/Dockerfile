@@ -20,6 +20,7 @@ RUN apk add --no-cache \
     libpq-dev \
     icu-dev \
     libxml2-dev \
+    oniguruma-dev \
     && docker-php-ext-configure intl \
     && docker-php-ext-install -j$(nproc) \
     pdo_pgsql \
