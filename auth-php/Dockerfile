@@ -20,13 +20,13 @@ RUN apk add --no-cache \
     libpq-dev \
     icu-dev \
     libxml2-dev \
+    && docker-php-ext-configure intl \
     && docker-php-ext-install -j$(nproc) \
     pdo_pgsql \
     mbstring \
     xml \
     intl \
-    opcache \
-    && apk del libpq-dev icu-dev libxml2-dev
+    opcache
 
 # Composer 설치 (최소)
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
