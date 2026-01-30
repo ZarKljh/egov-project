@@ -2,8 +2,8 @@
 # Spring Boot (eGovFrame WAR) - Multi-stage, JRE + Tomcat만으로 이미지 최소화
 # ============================================
 
-# Stage 1: Maven 빌드
-FROM eclipse-temurin:11-jdk-alpine AS builder
+# Stage 1: Maven 빌드 (Maven 포함 이미지 사용)
+FROM maven:3.9-eclipse-temurin-11-alpine AS builder
 
 WORKDIR /build
 
