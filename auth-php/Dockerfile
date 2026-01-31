@@ -44,6 +44,9 @@ COPY --from=frontend /app/public/build ./public/build
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts \
     && composer run-script post-autoload-dump --no-interaction || true
 
+# .env 제거 → 런타임에 Docker environment만 사용 (DB_HOST=postgres 등)
+RUN rm -f .env
+
 # 권한 및 캐시 (config:cache 제외 - 런타임에 Docker env 사용)
 RUN chmod -R 755 storage bootstrap/cache \
     && php artisan route:cache 2>/dev/null || true
