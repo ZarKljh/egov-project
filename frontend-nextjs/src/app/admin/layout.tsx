@@ -35,6 +35,9 @@ import { Button } from "@/components/ui/button";
 
 type MenuType = "dashboard" | "users" | "settings" | "statistics";
 
+/** true로 변경 시 대시보드/사용자관리/시스템설정/통계 및 리포트 메뉴가 사이드바에 표시됨 */
+const SHOW_EXTRA_MENUS = false;
+
 // JWT 토큰 구조 정의
 interface AuthToken {
   role: 'ADMIN' | 'USER';
@@ -156,74 +159,78 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <SidebarGroupLabel>메인 메뉴</SidebarGroupLabel>
                 <SidebarGroupContent>
                   <SidebarMenu>
-                    <SidebarMenuItem>
-                      <SidebarMenuButton
-                        asChild
-                        isActive={activeMenu === "dashboard"}
-                      >
-                        <a 
-                          href="#" 
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setActiveMenu("dashboard");
-                          }}
-                        >
-                          <Home className="h-4 w-4" />
-                          <span>대시보드</span>
-                        </a>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    <SidebarMenuItem>
-                      <SidebarMenuButton
-                        asChild
-                        isActive={activeMenu === "users"}
-                      >
-                        <a 
-                          href="#" 
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setActiveMenu("users");
-                          }}
-                        >
-                          <Users className="h-4 w-4" />
-                          <span>사용자 관리</span>
-                        </a>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    <SidebarMenuItem>
-                      <SidebarMenuButton
-                        asChild
-                        isActive={activeMenu === "settings"}
-                      >
-                        <a 
-                          href="#" 
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setActiveMenu("settings");
-                          }}
-                        >
-                          <Settings className="h-4 w-4" />
-                          <span>시스템 설정</span>
-                        </a>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    <SidebarMenuItem>
-                      <SidebarMenuButton
-                        asChild
-                        isActive={activeMenu === "statistics"}
-                      >
-                        <a 
-                          href="#" 
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setActiveMenu("statistics");
-                          }}
-                        >
-                          <BarChart3 className="h-4 w-4" />
-                          <span>통계 및 리포트</span>
-                        </a>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
+                    {SHOW_EXTRA_MENUS && (
+                      <>
+                        <SidebarMenuItem>
+                          <SidebarMenuButton
+                            asChild
+                            isActive={activeMenu === "dashboard"}
+                          >
+                            <a 
+                              href="#" 
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setActiveMenu("dashboard");
+                              }}
+                            >
+                              <Home className="h-4 w-4" />
+                              <span>대시보드</span>
+                            </a>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                          <SidebarMenuButton
+                            asChild
+                            isActive={activeMenu === "users"}
+                          >
+                            <a 
+                              href="#" 
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setActiveMenu("users");
+                              }}
+                            >
+                              <Users className="h-4 w-4" />
+                              <span>사용자 관리</span>
+                            </a>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                          <SidebarMenuButton
+                            asChild
+                            isActive={activeMenu === "settings"}
+                          >
+                            <a 
+                              href="#" 
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setActiveMenu("settings");
+                              }}
+                            >
+                              <Settings className="h-4 w-4" />
+                              <span>시스템 설정</span>
+                            </a>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                          <SidebarMenuButton
+                            asChild
+                            isActive={activeMenu === "statistics"}
+                          >
+                            <a 
+                              href="#" 
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setActiveMenu("statistics");
+                              }}
+                            >
+                              <BarChart3 className="h-4 w-4" />
+                              <span>통계 및 리포트</span>
+                            </a>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      </>
+                    )}
                     <SidebarMenuItem>
                       <SidebarMenuButton
                         asChild

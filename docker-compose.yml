@@ -31,13 +31,13 @@ services:
       dockerfile: Dockerfile
       args:
         NEXT_PUBLIC_API_URL: http://49.50.132.115:8000/api
-        NEXT_PUBLIC_SPRINGBOOT_API_URL: http://49.50.132.115:8080
+        NEXT_PUBLIC_SPRINGBOOT_API_URL: http://49.50.132.115:8080/springboot
     container_name: workspace-egov-frontend
     ports:
       - "3000:3000"
     environment:
       NEXT_PUBLIC_API_URL: http://49.50.132.115:8000/api
-      NEXT_PUBLIC_SPRINGBOOT_API_URL: http://49.50.132.115:8080
+      NEXT_PUBLIC_SPRINGBOOT_API_URL: http://49.50.132.115:8080/springboot
     depends_on:
       - auth-php
       - egov-springboot
