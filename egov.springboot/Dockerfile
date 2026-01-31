@@ -15,7 +15,7 @@ COPY src ./src
 RUN mvn package -DskipTests -B -q
 
 # Stage 2: Tomcat + WAR만 배치 (JRE 기반으로 용량 최소화)
-FROM tomcat:10.1-jre11-temurin-jammy
+FROM tomcat:9.0-jre11-temurin-jammy
 
 # 기본 webapps 제거 후 우리 앱만 배치 (선택)
 RUN rm -rf /usr/local/tomcat/webapps/*
