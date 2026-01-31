@@ -50,6 +50,9 @@ services:
     ports:
       - "8000:8000"
     environment:
+      # 로그인/토큰 생성에 필요 (운영 시 값 변경 권장)
+      APP_KEY: base64:CH8fwAUcDztKYZUM6g2NTGG4aG00jQUCnobu9sY3ESf8=
+      JWT_SECRET: CH8fwAUcDztKYZUM6g2NTGG4aG00jQUCnobu9sY3ESf87ilLL1B7xVOvsQTPnfUD
       DB_CONNECTION: pgsql
       DB_HOST: postgres
       DB_PORT: 5432
