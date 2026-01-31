@@ -24,16 +24,20 @@ services:
       timeout: 5s
       retries: 5
 
+  # 서버 공인 IP: 배포 서버가 다르면 build.args 값 수정 후 재빌드 필요
   frontend-nextjs:
     build:
       context: ./frontend-nextjs
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://49.50.132.115:8000/api
+        NEXT_PUBLIC_SPRINGBOOT_API_URL: http://49.50.132.115:8080
     container_name: workspace-egov-frontend
     ports:
       - "3000:3000"
     environment:
-      NEXT_PUBLIC_API_URL: http://auth-php:8000/api
-      NEXT_PUBLIC_SPRINGBOOT_API_URL: http://egov-springboot:8080
+      NEXT_PUBLIC_API_URL: http://49.50.132.115:8000/api
+      NEXT_PUBLIC_SPRINGBOOT_API_URL: http://49.50.132.115:8080
     depends_on:
       - auth-php
       - egov-springboot
@@ -52,7 +56,8 @@ services:
       DB_DATABASE: egov-postgres
       DB_USERNAME: postgres
       DB_PASSWORD: "1234"
-      CORS_ALLOWED_ORIGINS: http://localhost:3000,http://frontend-nextjs:3000
+      APP_URL: http://49.50.132.115:8000
+      CORS_ALLOWED_ORIGINS: http://localhost:3000,http://frontend-nextjs:3000,http://49.50.132.115:3000
       SPRINGBOOT_REDIRECT_URL: http://egov-springboot:8080/springboot
     volumes:
       - auth_php_storage:/var/www/html/storage

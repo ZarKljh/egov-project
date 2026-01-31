@@ -7,6 +7,12 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# 빌드 시 브라우저가 호출할 API 주소 (NEXT_PUBLIC_* 는 빌드 시점에 번들에 박힘)
+ARG NEXT_PUBLIC_API_URL=http://localhost:8000/api
+ARG NEXT_PUBLIC_SPRINGBOOT_API_URL=http://localhost:8080
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_SPRINGBOOT_API_URL=$NEXT_PUBLIC_SPRINGBOOT_API_URL
+
 # 패키지 파일만 먼저 복사 (캐시 활용)
 COPY package.json package-lock.json* ./
 RUN npm ci
