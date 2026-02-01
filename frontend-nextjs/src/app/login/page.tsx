@@ -148,8 +148,8 @@ export default function LoginPage() {
         // Spring Boot: AuthenticationSuccessHandler에서 역할에 따라 리다이렉트
         // Next.js: router.push()로 클라이언트 사이드 라우팅
         if (userRole === "ADMIN") {
-          // ADMIN은 관리자 페이지로
-          router.push("/admin");
+          // ADMIN은 민원문의처리 페이지로 (대시보드 미구현)
+          router.push("/admin/complaints");
         } else {
           // USER 또는 기타 사용자는 민원문의 게시판으로 (외부 JSP 서버)
           const boardUrl = process.env.NEXT_PUBLIC_EGOV_BOARD_URL;

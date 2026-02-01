@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useMenuContext } from "./layout";
 import Cookies from "js-cookie";
 import {
@@ -242,7 +244,13 @@ function StatisticsContent() {
 }
 
 export default function AdminPage() {
+  const router = useRouter();
   const { activeMenu } = useMenuContext();
+
+  // /admin 접속 시 대시보드 미구현이므로 민원문의처리로 리다이렉트
+  useEffect(() => {
+    router.replace("/admin/complaints");
+  }, [router]);
 
   const renderContent = () => {
     switch (activeMenu) {
@@ -259,5 +267,5 @@ export default function AdminPage() {
     }
   };
 
-  return <>{renderContent()}</>;
+  return null; // 리다이렉트 중이므로 화면 미표시
 }
