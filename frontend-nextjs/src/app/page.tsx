@@ -34,7 +34,7 @@ export default function Home() {
           </a>
           <a
             className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-8 transition-colors hover:border-[#003366] hover:bg-black/[.02] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-auto min-w-[140px]"
-            href="/signup"
+            href="/register"
           >
             회원가입
           </a>
