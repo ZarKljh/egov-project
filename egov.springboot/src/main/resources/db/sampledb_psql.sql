@@ -30,31 +30,7 @@ CREATE TABLE IF NOT EXISTS site_user (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-------관리자계정 init-------
-INSERT INTO site_user (
-    username, 
-    password, 
-    name, 
-    phone, 
-    email, 
-    postcode, 
-    address_default, 
-    address_detail, 
-    role
-)
-SELECT 
-    'admin',           -- username
-    '1234!',       -- password
-    '최고관리자',      -- name
-    '010-1234-5678',   -- phone
-    'admin@test.com',-- email
-    '12345',           -- postcode
-    '서울시 중구 세종대로', -- address_default
-    '100번지 1층',     -- address_detail
-    'ADMIN'            -- role
-WHERE NOT EXISTS (
-    SELECT 1 FROM site_user WHERE username = 'admin'
-);
+
 
 -- 2. 민원 게시글 테이블
 CREATE TABLE IF NOT EXISTS article (
@@ -104,23 +80,4 @@ CREATE TABLE IF NOT EXISTS forms (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
------------민원서식데이터 init-------------------------
--- PC 유지보수
-INSERT INTO forms (form_name, description, downloadable)
-SELECT 'PC 유지보수', 'PC 수리 및 하드웨어 점검 요청입니다.', FALSE
-WHERE NOT EXISTS (SELECT 1 FROM forms WHERE form_name = 'PC 유지보수');
 
--- 프로그램 설치
-INSERT INTO forms (form_name, description, downloadable)
-SELECT '프로그램 설치', '업무용 소프트웨어 설치 요청입니다.', FALSE
-WHERE NOT EXISTS (SELECT 1 FROM forms WHERE form_name = '프로그램 설치');
-
--- 계정신청
-INSERT INTO forms (form_name, description, downloadable)
-SELECT '계정신청', '시스템 및 사내망 계정 권한 신청입니다.', FALSE
-WHERE NOT EXISTS (SELECT 1 FROM forms WHERE form_name = '계정신청');
-
--- 주민등록초본 (요청하신 항목)
-INSERT INTO forms (form_name, description, downloadable)
-SELECT '주민등록초본', '주민등록초본 발급 신청 서식입니다.', TRUE
-WHERE NOT EXISTS (SELECT 1 FROM forms WHERE form_name = '주민등록초본');

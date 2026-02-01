@@ -113,7 +113,9 @@
         			</tr>
         			<c:forEach var="result" items="${resultList}" varStatus="status">
             			<tr>
-            				<td class="listtd"><c:out value="${paginationInfo.totalRecordCount+1 - ((searchVO.pageIndex-1) * searchVO.pageSize + status.count)}"/></td>
+            				<%-- 역순 번호: totalRecordCount - (pageIndex-1)*recordCountPerPage - status.index. 0 이하일 때는 현재 페이지 내 순번 표시 --%>
+            				<c:set var="rowNo" value="${paginationInfo.totalRecordCount - (searchVO.pageIndex - 1) * paginationInfo.recordCountPerPage - status.index}"/>
+            				<td class="listtd"><c:out value="${rowNo >= 1 ? rowNo : (searchVO.pageIndex - 1) * paginationInfo.recordCountPerPage + status.count}"/></td>
             				<td class="listtd">
             					<c:if test="${result.parentArticleId > 0}">
                 					&nbsp;&nbsp; 
