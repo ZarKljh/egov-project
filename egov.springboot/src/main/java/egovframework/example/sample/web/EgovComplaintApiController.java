@@ -2,12 +2,13 @@ package egovframework.example.sample.web;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.io.InputStream;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -24,9 +25,9 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 
 import egovframework.com.cmm.util.JwtUtil;
 import egovframework.example.sample.service.AnswerService;
@@ -72,6 +73,9 @@ public class EgovComplaintApiController {
 	@Resource(name = "answerService")
 	private AnswerService answerService;
 	
+	@javax.annotation.Resource
+	private RestTemplate restTemplate;
+		
 	@PostConstruct
 	public void init() {
 		// #region agent log
@@ -468,4 +472,90 @@ public class EgovComplaintApiController {
 					.body(Map.of("error", "민원 삭제 중 오류가 발생했습니다."));
 		}
 	}
+	
+	@PostMapping("/complaints/{id}/draft")
+	@ResponseBody
+	public ResponseEntity<Map<String, Object>> generateDraft(
+			@PathVariable Long id, 
+			HttpServletRequest request){
+	
+		String userRole = JwtUtil.getUserRole(request);
+		if (!"ADMIN".equals(userRole)) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error","접근 권한이 없습니다"));
+		}
+		
+		try {
+			SampleVO sampleVO = new SampleVO();
+			sampleVO.setArticleId(id);
+			SampleVO article = sampleService.selectSample(sampleVO);
+			if (article == null) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error","민원을 찾을 수 없습니다"));
+			}
+			
+			String apiKey = null;
+			try(InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("egovframework/egovProps/globals.properties")){
+				if (is != null) {
+					Properties props = new Properties();
+					props.load(is);
+					apiKey = props.getProperty("GEMINI_API_KEY");
+				}
+			}
+			if (apiKey == null || apiKey.isEmpty()) {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                    .body(Map.of("error", "Gemini API 키가 설정되지 않았습니다."));
+	        }
+			
+			String title = article.getTitle() != null ? article.getTitle() : "";
+			String content = article.getContent() !=null ? article.getContent() : "";
+			String prompt = "아래 민원에 대한 공공기관 답변 초안을 하나만 작성해 주세요. 존댓말로 간결하게 작성하세요.\n\n" + 
+	                "[제목]\n" + title + "\n\n" + 
+	                "[내용]\n" + content;
+					
+			String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=" + apiKey;
+	        Map<String, Object> requestBody = new HashMap<>();
+	        List<Map<String, Object>> contents = new ArrayList<>();
+	        Map<String, Object> contentItem = new HashMap<>();
+	        List<Map<String, Object>> parts = new ArrayList<>();
+	        Map<String, Object> part = new HashMap<>();
+	        part.put("text", prompt);
+	        parts.add(part);
+	        contentItem.put("parts", parts);
+	        contents.add(contentItem);
+	        requestBody.put("contents", contents);
+
+	        @SuppressWarnings("unchecked")
+	        Map<String, Object> response = restTemplate.postForObject(url, requestBody, Map.class);
+	        if (response == null) {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                    .body(Map.of("error", "AI 초안 생성에 실패했습니다."));
+	        }
+
+	        List<?> candidates = (List<?>) response.get("candidates");
+	        if (candidates == null || candidates.isEmpty()) {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                    .body(Map.of("error", "AI 초안 생성에 실패했습니다."));
+	        }
+	        Map<?, ?> first = (Map<?, ?>) candidates.get(0);
+	        Map<?, ?> contentMap = (Map<?, ?>) first.get("content");
+	        if (contentMap == null) {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                    .body(Map.of("error", "AI 초안 생성에 실패했습니다."));
+	        }
+	        List<?> partsList = (List<?>) contentMap.get("parts");
+	        if (partsList == null || partsList.isEmpty()) {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                    .body(Map.of("error", "AI 초안 생성에 실패했습니다."));
+	        }
+	        Map<?, ?> textPart = (Map<?, ?>) partsList.get(0);
+	        String draft = textPart.get("text") != null ? textPart.get("text").toString().trim() : "";
+
+	        return ResponseEntity.ok(Map.of("draft", draft));
+			
+		} catch(Exception e) {
+			 LOGGER.error("AI 초안 생성 실패: articleId={}", id, e);
+		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "AI 초안 생성 중 오류가 발생했습니다."));
+		               
+		}
+	}
+	
 }

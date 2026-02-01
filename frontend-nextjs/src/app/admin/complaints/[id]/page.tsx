@@ -101,7 +101,7 @@ export default function ComplaintDetailPage() {
         router.push("/admin/complaints");
       } else {
         alert(
-          error.response?.data?.error || "민원 정보를 불러오는데 실패했습니다.",
+          error.response?.data?.error || "민원 정보를 불러오는데 실패했습니다."
         );
       }
     } finally {
@@ -117,11 +117,32 @@ export default function ComplaintDetailPage() {
         forms.map((form: any) => ({
           formId: form.formId,
           formName: form.formName,
-        })),
+        }))
       );
     } catch (error: any) {
       console.error("서식 목록 로드 실패:", error);
       // 서식 목록 로드 실패해도 답변 작성은 가능하도록 에러만 로그
+    }
+  };
+
+  const handleAiDraft = async () => {
+    if (!id) return;
+    try {
+      setProcessing(true);
+      const response = await springBootAxios.post<{ draft: string }>(
+        `/api/complaints/${id}/draft`
+      );
+      const draft = response.data?.draft;
+      if (typeof draft === "string" && draft) {
+        setNewAnswer(draft);
+      } else {
+        alert("초안을 받지 못했습니다.");
+      }
+    } catch (error: any) {
+      console.error("AI 초안 생성 실패:", error);
+      alert(error.response?.data?.error || "AI 초안 생성에 실패했습니다.");
+    } finally {
+      setProcessing(false);
     }
   };
 
@@ -338,7 +359,18 @@ export default function ComplaintDetailPage() {
             </Select>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="answerContent">답변 내용</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="answerContent">답변 내용</Label>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleAiDraft}
+                disabled={processing}
+              >
+                AI 초안 생성
+              </Button>
+            </div>
             <Textarea
               id="answerContent"
               placeholder="답변 내용을 입력하세요..."
