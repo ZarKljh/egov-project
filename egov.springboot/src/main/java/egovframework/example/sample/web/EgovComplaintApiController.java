@@ -511,7 +511,7 @@ public class EgovComplaintApiController {
 	                "[제목]\n" + title + "\n\n" + 
 	                "[내용]\n" + content;
 					
-			String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=" + apiKey;
+			String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=" + apiKey;
 	        Map<String, Object> requestBody = new HashMap<>();
 	        List<Map<String, Object>> contents = new ArrayList<>();
 	        Map<String, Object> contentItem = new HashMap<>();
